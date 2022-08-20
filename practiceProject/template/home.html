@@ -4,4 +4,14 @@
 
 <h4>Home Page is here.</h4>
 
+<div>
+
+    {% for product in products %}
+
+        <h2> {{product.id}} --> {{product.name}} </h2>
+
+    {% endfor %}
+
+</div>
+
 {% endblock content %}
