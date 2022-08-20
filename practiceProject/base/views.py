@@ -15,5 +15,10 @@ def home(request):
     #return render(request, 'home.html', DataSent)
     return render(request, 'base/home.html', {'products' : products})
 
-def product(request):
-    return render(request, 'base/product.html')
+def product(request, pk):
+    product = None
+    for i in products:
+        if i['id'] == int(pk):
+            product = i
+    context = {'product' : product}
+    return render(request, 'base/product.html', context)
