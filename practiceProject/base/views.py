@@ -13,7 +13,7 @@ def home(request):
     #something neat you can do is 
     #DataSent = {'products' : products}
     #return render(request, 'home.html', DataSent)
-    return render(request, 'home.html', {'products' : products})
+    return render(request, 'base/home.html', {'products' : products})
 
 def product(request):
-    return render(request, 'product.html')
+    return render(request, 'base/product.html')
