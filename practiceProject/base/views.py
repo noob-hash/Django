@@ -10,6 +10,9 @@ products = [
 
 def home(request):
     # I am sending above products data as dictonary which will be called 'products'
+    #something neat you can do is 
+    #DataSent = {'products' : products}
+    #return render(request, 'home.html', DataSent)
     return render(request, 'home.html', {'products' : products})
 
 def product(request):
