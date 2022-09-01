@@ -5,7 +5,7 @@ from django.db import models
 #creating database instance
 #instance's first word is capatilized best practice
 
-class Product(models.Model):
+class Products(models.Model):
     #columns and it's data type ant other values for database
     name = models.CharField(max_length=200)
 
@@ -18,4 +18,6 @@ class Product(models.Model):
     #auto_now updates every time this instance is used
     #auto_now_add update once it is created and that's it
 
-    
+    #return when called aka methods
+    def __str__(self):
+        return self.name

@@ -1,14 +1,14 @@
 from django.shortcuts import render
+from .models import Products
 # Create your views here.
 
-products = [
-    {'id' : 1, 'name' : 'Airsoft Gun'},
-    {'id' : 2, 'name' : 'Scope'},
-    {'id' : 3, 'name' : 'Mag safe'},
-    {'id' : 4, 'name' : 'Helmet'},
-]
+
 
 def home(request):
+    #will overide above dictonary
+    #variable_name = modle_name.object_attribute.method
+    #method can be all, get, filter and exclude with more types of each
+    products = Products.objects.all()
     # I am sending above products data as dictonary which will be called 'products'
     #something neat you can do is 
     #DataSent = {'products' : products}
@@ -17,8 +17,6 @@ def home(request):
 
 def product(request, pk):
     product = None
-    for i in products:
-        if i['id'] == int(pk):
-            product = i
+    product = Products.objects.get(id = pk)
     context = {'product' : product}
     return render(request, 'base/product.html', context)
