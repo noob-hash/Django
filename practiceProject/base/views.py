@@ -35,4 +35,27 @@ def addProduct(request):
             return redirect('home')
 
     context = {'form' : form}
-    return render(request, 'base/addProduct.html', context)
+    return render(request, 'base/Product_form.html', context)
+
+def updateProduct(request, pk):
+    #get product by id pk
+    product = Product.objects.get(id = pk)
+    #fill form with data from product
+    form = ProductForm(instance = product)
+    if request.method == 'POST':
+        #change form data to new data
+        form = ProductForm(request.POST, instance = product)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+
+    context = {'form' : form}
+    return render(request, 'base/Product_form.html', context)
+
+def deleteProduct(request, pk):
+    product = Product.objects.get(id = pk)
+    if request.method == 'POST':
+        product.delete()
+        return redirect('home')
+    context = {'obj' : product}
+    return render(request, 'base/delete.html', context)

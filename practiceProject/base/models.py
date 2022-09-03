@@ -27,7 +27,7 @@ class Product(models.Model):
     #- means data in decending with new value first
     #Meta class means it has something of importance
     class Meta:
-        ordering = ['-updatedDate', 'createdDate']
+        ordering = ['-updatedDate', '-createdDate']
 
     #return when called aka methods
     def __str__(self):

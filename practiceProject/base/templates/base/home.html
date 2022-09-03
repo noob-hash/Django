@@ -9,12 +9,17 @@
 <div>
 
     {% for product in products %}
-
+    <hr>
+    <div>
+        <a href="{% url 'updateProduct' product.id %}">Edit</a>
+        <a href="{% url 'deleteProduct' product.id %}">Delete</a>
         <!-- <h2> {{product.id}} --|> <a href="/product/{{product.id}}"> {{product.name}} </a></h2> -->
         <!-- above works fine but to make sure it is not affected by change of url name and works 
         with name provoded below is a better solution-->
 
         <h2> {{product.id}} ==|> <a href="{% url 'product' product.id %}"> {{product.name}} </a> </h2>
+    </div>
+        
 
     {% endfor %}
 
