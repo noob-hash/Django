@@ -44,3 +44,9 @@ class Review(models.Model):
 
     def _str_(self):
         return {'star' : self.star, 'comment': self.comment[0:50]}
+
+class Categories(models.Model):
+    user = models.ForeignKey(User, on_delete = models.CASCADE, null= True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
+    name = models.CharField(max_length=100, null=True)
+    createdDate = models.DateTimeField(auto_now_add=True)

@@ -1,5 +1,6 @@
+from unicodedata import category
 from django.shortcuts import redirect,render
-from .models import Product
+from .models import Categories, Product
 from .form import ProductForm
 # Create your views here.
 
@@ -59,3 +60,7 @@ def deleteProduct(request, pk):
         return redirect('home')
     context = {'obj' : product}
     return render(request, 'base/delete.html', context)
+
+def addCategory(request, pk):
+    category = Categories.objects.get(id = pk)
+    
