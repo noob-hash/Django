@@ -14,9 +14,16 @@
     <div class="navigation">
         <h3>Browse Categories</h3>
         <hr>
+        {% for category in categorys %}
+        <div class="category">
+            <h2> {{category.name}} </h2>
+            <hr>
+        </div>
+        {% endfor %}
     </div>
     <div class="mainPage">    
         <a href="{% url 'addProduct' %}">Add Product</a>
+        <a href="{% url 'addCategory' %}">Add Category</a>
         <div class="Products">
     
             {% for product in products %}

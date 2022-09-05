@@ -1,7 +1,8 @@
+from asyncio.windows_events import NULL
 from unicodedata import category
 from django.shortcuts import redirect,render
-from .models import Categories, Product
-from .form import ProductForm
+from .models import Category, Product
+from .form import CategoryForm, ProductForm
 # Create your views here.
 
 
@@ -61,6 +62,25 @@ def deleteProduct(request, pk):
     context = {'obj' : product}
     return render(request, 'base/delete.html', context)
 
-def addCategory(request, pk):
-    category = Categories.objects.get(id = pk)
+def addCategory(request):
+    form = CategoryForm()
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
     
+    context = {'form': form}
+    return render(request, 'base/Category_form.html', context)
+
+def updateCategory(request, pk):
+    category = Category.objects.get(id = pk)
+    form = CategoryForm(instance=pk)
+    if request.method == 'POST':
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    
+    context = {'form': form}
+    return render(request, 'base/Category_form.html', context)

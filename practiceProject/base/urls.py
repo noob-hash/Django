@@ -8,4 +8,5 @@ urlpatterns = [
     path('addProduct/', views.addProduct, name = "addProduct"),
     path('updateProduct/<str:pk>/', views.updateProduct, name = "updateProduct"),
     path('deleteProduct/<str:pk>/', views.deleteProduct, name = "deleteProduct"),
+    path('addCategory/', views.addCategory, name = "addCategory"),
 ]
