@@ -16,7 +16,7 @@
         <hr>
         {% for category in categorys %}
         <div class="category">
-            <h2> {{category.name}} </h2>
+            {{category.id}} <h5> <a href="{% url 'category' category.id %}">{{category.name}}</a> </h5>
             <hr>
         </div>
         {% endfor %}
@@ -32,7 +32,12 @@
                 <!-- above works fine but to make sure it is not affected by change of url name and works 
                 with name provoded below is a better solution-->
     
-                <h2> {{product.id}} ==|> <a href="{% url 'product' product.id %}"> {{product.name}} </a> </h2>
+                {{product.id}} ==|><h2 style="display: flex; justify-content: space-between;"> <a href="{% url 'product' product.id %}"> {{product.name}} </a>  <a href="{% url 'addReview' %}">Add Review</a></h2>
+                {% for review in reviews%}
+                    {%if review.product.id == product.id%}
+                        <span style="display: flex; justify-content:space-around; "> {{review.user}} {{review.star}} </span><br>
+                    {% endif %}
+                {% endfor %}
                 <a href="{% url 'updateProduct' product.id %}">Edit</a>
                 <a href="{% url 'deleteProduct' product.id %}">Delete</a>
             </div>

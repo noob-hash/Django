@@ -6,5 +6,16 @@
 <span>Rs. {{product.price}} </span> <br>
 <span> Placed by: @{{product.user}} </span> <br>
 <span>Last Updated: {{product.updatedDate}} </span> <br>
+<span>Description: {{product.productDescription}}</span>
+<h4>Reviews</h4>
+{% for review in reviews %}
+    <div>
+        <div style = "display: flex; justify-content: space-evenly;" >
+            <span> {{review.user}} </span>
+            <span> {{review.star}} </span>
+        </div>
+    </div>
+    <p> {{review.comment}} </p>
+{% endfor %}
 
 {% endblock content %}

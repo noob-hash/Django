@@ -6,14 +6,24 @@ from django.contrib.auth.models import User
 #creating database instance
 #instance's first word is capatilized best practice
 
+
+class Category(models.Model):
+    user = models.ForeignKey(User, on_delete = models.CASCADE, null= True)
+    name = models.CharField(max_length=100)
+    createdDate = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
 class Product(models.Model):
     #user needs to be added
     user = models.ForeignKey(User, on_delete = models.CASCADE, null = True)
-    #columns and it's data type ant other values for database
+    #columns and it's data type and other values for database
     name = models.CharField(max_length=200)
 
     #first for database, second for form to let empty value allowed
     productDescription = models.TextField(null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
     createdDate = models.DateTimeField(auto_now_add=True)
     updatedDate = models.DateTimeField(auto_now=True)
 
@@ -42,14 +52,5 @@ class Review(models.Model):
     createdDate = models.DateTimeField(auto_now_add=True)
     updatedDate = models.DateTimeField(auto_now=True)
 
-    def _str_(self):
-        return {'star' : self.star, 'comment': self.comment[0:50]}
-
-class Category(models.Model):
-    user = models.ForeignKey(User, on_delete = models.CASCADE, null= True)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
-    name = models.CharField(max_length=100)
-    createdDate = models.DateTimeField(auto_now_add=True)
-
-    def _str_(self):
-        return self.name
+    def __str__(self):
+        return self.user, self.star

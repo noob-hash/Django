@@ -1,6 +1,6 @@
 from dataclasses import fields
 from django.forms import ModelForm
-from .models import Category, Product
+from .models import Category, Product, Review
 
 class ProductForm(ModelForm):
     class Meta:
@@ -10,4 +10,9 @@ class ProductForm(ModelForm):
 class CategoryForm(ModelForm):
     class Meta:
         model = Category
+        fields = '__all__'
+
+class ReviewForm(ModelForm):
+    class Meta:
+        model = Review
         fields = '__all__'
