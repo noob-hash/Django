@@ -4,4 +4,16 @@
 
 <h1>Category: {{category.name}}</h1>
 
+<span> Products : </span>
+{%for product in products%}
+    {%if product.category.id == category.id%}
+        <div>
+            <span>{{product.name}}</span>
+            <span>{{product.price}}</span>
+            <span>{{product.quantity}}</span>
+            
+        </div>
+    {%endif%}
+{%endfor%}
+
 {%endblock content%}

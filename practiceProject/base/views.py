@@ -1,23 +1,71 @@
 from asyncio.windows_events import NULL
 from django.shortcuts import redirect,render
+from django.contrib import messages
+from django.db.models import Q
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
 from .models import Category, Product, Review
 from .form import CategoryForm, ProductForm, ReviewForm
 # Create your views here.
 
+def loginPage(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
 
+        try:
+            user = User.objects.get(username = username)
+        except:
+            messages.error(request, "Incorrect username or password combination")
+
+        user = authenticate(request, username = username, password = password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, "Incorrect username or password combination")
+
+    context = {}
+    return render(request, 'base/Login_Register.html',context)
+
+def logoutUser(request):
+    logout(request)
+    return redirect('home')
 
 def home(request):
+    # check if request method has something 
+    # if it does return view of product with said cateogary name else show all
+    query = request.GET.get('q') if request.GET.get('q') != None else ''
+
     #will overide above dictonary
     #variable_name = modle_name.object_attribute.method
     #method can be all, get, filter and exclude with more types of each
-    products = Product.objects.all()
+
+    # filter to filter query
+    # we use __ to go query parent class
+    # as shown category is parent class of product as such we use __ to query name of product
+    # this method doesn't require the query to have full name
+    # but only checks if the query provided is contained in categotry name
+    
+    # chaining filter query with or , and using Q check imports
+    products = Product.objects.filter(
+        Q(category__name__contains = query) |
+        Q(name__contains = query)
+        )
+    # need to check more query methods as above contains is case insensetive
+    # icontains is case sensitive, starts with checks if value starting with same letter is present
+
+
     categorys = Category.objects.all()
     reviews = Review.objects.all()
+    product_count = products.count()
     # I am sending above products data as dictonary which will be called 'products'
     #something neat you can do is 
     #DataSent = {'products' : products}
     #return render(request, 'home.html', DataSent)
-    return render(request, 'base/home.html', {'products' : products, 'categorys' : categorys, 'reviews' : reviews})
+    context = {'categorys' : categorys, "reviews" : reviews, "products" : products, "product_count" : product_count}
+    return render(request, 'base/home.html', context)
 
 def product(request, pk):
     product = None
@@ -29,7 +77,8 @@ def product(request, pk):
 def category(request, pk):
     category = None
     category = Category.objects.get(id = pk)
-    context = {'category' : category}
+    products = Product.objects.all()
+    context = {'category' : category, 'products' : products}
     return render(request, 'base/category.html', context)
 
 

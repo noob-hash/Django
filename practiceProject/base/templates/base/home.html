@@ -14,14 +14,19 @@
     <div class="navigation">
         <h3>Browse Categories</h3>
         <hr>
+        <div class="category">
+            <h5> <a href="{% url 'home'%}">All</a> </h5>
+            <hr>
+        </div>
         {% for category in categorys %}
         <div class="category">
-            {{category.id}} <h5> <a href="{% url 'category' category.id %}">{{category.name}}</a> </h5>
+            <h5> <a href="{% url 'home'%}?q={{category.name}}">{{category.name}}</a> </h5>
             <hr>
         </div>
         {% endfor %}
     </div>
     <div class="mainPage">    
+        <div>{{product_count}} available</div>
         <a href="{% url 'addProduct' %}">Add Product</a>
         <a href="{% url 'addCategory' %}">Add Category</a>
         <div class="Products">
@@ -32,10 +37,15 @@
                 <!-- above works fine but to make sure it is not affected by change of url name and works 
                 with name provoded below is a better solution-->
     
-                {{product.id}} ==|><h2 style="display: flex; justify-content: space-between;"> <a href="{% url 'product' product.id %}"> {{product.name}} </a>  <a href="{% url 'addReview' %}">Add Review</a></h2>
+                <h2 style="display: flex; justify-content: space-between;"> <a href="{% url 'product' product.id %}"> {{product.name}} </a> {{product.user}}  <a href="{% url 'addReview' %}">Add Review</a></h2>
+                <span>Category: {{product.category.name}}</span><br>
+                
                 {% for review in reviews%}
                     {%if review.product.id == product.id%}
-                        <span style="display: flex; justify-content:space-around; "> {{review.user}} {{review.star}} </span><br>
+                    <div>
+                        <span> {{review.user}} {{review.star}} </span><br>
+                        <span> {{review.comment}} </span>
+                    </div>
                     {% endif %}
                 {% endfor %}
                 <a href="{% url 'updateProduct' product.id %}">Edit</a>

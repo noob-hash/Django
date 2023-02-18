@@ -11,6 +11,7 @@ class Category(models.Model):
     user = models.ForeignKey(User, on_delete = models.CASCADE, null= True)
     name = models.CharField(max_length=100)
     createdDate = models.DateTimeField(auto_now_add=True)
+    updatedDate = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -28,6 +29,7 @@ class Product(models.Model):
     updatedDate = models.DateTimeField(auto_now=True)
 
     price = models.IntegerField(null = True)
+    quantity = models.IntegerField(default=1)
 
     #diff between auto_now and auto_now_add is
     #auto_now updates every time this instance is used
@@ -53,4 +55,4 @@ class Review(models.Model):
     updatedDate = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.user, self.star
+        return self.comment
