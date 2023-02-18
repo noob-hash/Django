@@ -1,7 +1,9 @@
 from asyncio.windows_events import NULL
 from django.shortcuts import redirect,render
+from django.http import HttpResponse
 from django.contrib import messages
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from .models import Category, Product, Review
@@ -9,6 +11,12 @@ from .form import CategoryForm, ProductForm, ReviewForm
 # Create your views here.
 
 def loginPage(request):
+
+    page = 'login'
+
+    if request.user.is_authenticated:
+        return redirect('home')
+
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -26,12 +34,19 @@ def loginPage(request):
         else:
             messages.error(request, "Incorrect username or password combination")
 
-    context = {}
+    context = {'page' : page}
     return render(request, 'base/Login_Register.html',context)
 
 def logoutUser(request):
     logout(request)
     return redirect('home')
+
+def registerUser(request):
+    page = 'register'
+
+    context = {'page' : page}
+    return render(request, 'base/Login_Register.html', context)
+
 
 def home(request):
     # check if request method has something 
@@ -81,7 +96,9 @@ def category(request, pk):
     context = {'category' : category, 'products' : products}
     return render(request, 'base/category.html', context)
 
-
+# without loging in user can only view
+#  not perform any action
+@login_required(login_url="login")
 def addProduct(request):
     form = ProductForm()
 
@@ -97,6 +114,7 @@ def addProduct(request):
     context = {'form' : form}
     return render(request, 'base/Product_form.html', context)
 
+@login_required(login_url="login")
 def addReview(request):
     form = ReviewForm()
 
@@ -109,11 +127,16 @@ def addReview(request):
     context = {'form' : form}
     return render(request, 'base/Review_form.html', context)
 
+@login_required(login_url="login")
 def updateProduct(request, pk):
     #get product by id pk
     product = Product.objects.get(id = pk)
     #fill form with data from product
     form = ProductForm(instance = product)
+
+    if request.user != product.user:
+        return HttpResponse('You are not owner of this product!!')
+
     if request.method == 'POST':
         #change form data to new data
         form = ProductForm(request.POST, instance = product)
@@ -124,14 +147,20 @@ def updateProduct(request, pk):
     context = {'form' : form}
     return render(request, 'base/Product_form.html', context)
 
+@login_required(login_url="login")
 def deleteProduct(request, pk):
     product = Product.objects.get(id = pk)
+
+    if request.user != product.user:
+        return HttpResponse('You are not owner of this product!!')
+    
     if request.method == 'POST':
         product.delete()
         return redirect('home')
     context = {'obj' : product}
     return render(request, 'base/delete.html', context)
 
+@login_required(login_url="login")
 def addCategory(request):
     form = CategoryForm()
     if request.method == 'POST':
@@ -143,9 +172,14 @@ def addCategory(request):
     context = {'form': form}
     return render(request, 'base/Category_form.html', context)
 
+@login_required(login_url="login")
 def updateCategory(request, pk):
     category = Category.objects.get(id = pk)
     form = CategoryForm(instance=pk)
+
+    if request.user != category.user:
+        return HttpResponse('You are not owner of this product!!')
+
     if request.method == 'POST':
         form = CategoryForm(request.POST, instance=category)
         if form.is_valid():

@@ -48,8 +48,10 @@
                     </div>
                     {% endif %}
                 {% endfor %}
+                {% if request.user == product.user %}
                 <a href="{% url 'updateProduct' product.id %}">Edit</a>
                 <a href="{% url 'deleteProduct' product.id %}">Delete</a>
+                {% endif %}
             </div>
             <hr>
             {% endfor %}
