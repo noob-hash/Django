@@ -8,15 +8,43 @@
 <span>Category: {{product.category.name}}</span><br>
 <span>Last Updated: {{product.updatedDate}} </span> <br>
 <span>Description: {{product.productDescription}}</span>
+{% if request.user == product.user %}
+    <a href="{% url 'updateProduct' product.id %}">Edit</a>
+    <a href="{% url 'deleteProduct' product.id %}">Delete</a>
+{% endif %}
 <h4>Reviews</h4>
 {% for review in reviews %}
-    <div>
-        <div style = "display: flex; justify-content: space-evenly;" >
-            <span> {{review.user}} </span>
-            <span> {{review.star}} </span>
-        </div>
+    <div style=" padding: 0 5vw 0 5vw">
+        {% if request.user == review.user %}
+            <a href="{% url 'deleteReview' review.id %}">Delete</a>
+        {% endif %}
+            <small style = "display: flex; justify-content: space-between;" >
+            <span> @{{review.user}} </span>
+            <span> {{review.star}} stars </span>
+            <span> {{review.createdDate|timesince}} ago </span>
+        </small>
+        <p> {{review.comment}} </p>
+        <hr>
     </div>
-    <p> {{review.comment}} </p>
 {% endfor %}
+
+{% if request.user.is_authenticated %}
+    <div class="submit-review" style=" padding: 0 5vw 0 5vw">
+        <small>Enter your review of the product:</small>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <label for="star">
+                Rating:
+            </label>
+            <input type="number" name="star" value="0" max="5" min="0"/>
+            <br>
+            <label for="comment">
+                Product Description:
+            </label>
+            <input type="text" name="comment" placeholder="Enter your review of product..." />
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+{% endif %}
 
 {% endblock content %}

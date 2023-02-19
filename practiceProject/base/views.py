@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from .models import Category, Product, Review
 from .form import CategoryForm, ProductForm, ReviewForm
@@ -18,7 +19,7 @@ def loginPage(request):
         return redirect('home')
 
     if request.method == 'POST':
-        username = request.POST.get('username')
+        username = request.POST.get('username').lower()
         password = request.POST.get('password')
 
         try:
@@ -43,8 +44,20 @@ def logoutUser(request):
 
 def registerUser(request):
     page = 'register'
+    form = UserCreationForm()
 
-    context = {'page' : page}
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit = False)
+            user.username = user.username.lower()
+            user.save()
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, 'An error occured during registration')
+
+    context = {'page' : page, 'form' : form}
     return render(request, 'base/Login_Register.html', context)
 
 
@@ -85,7 +98,17 @@ def home(request):
 def product(request, pk):
     product = None
     product = Product.objects.get(id = pk)
-    reviews = Review.objects.filter(product = pk)
+    reviews = product.review_set.all().order_by('-createdDate')
+    
+    if request.method == 'POST':
+        review = Review.objects.create(
+            user = request.user,
+            product  = product,
+            star = request.POST.get('star'),
+            comment = request.POST.get('comment')
+        )
+        return redirect('product', pk = product.id)
+    
     context = {'product' : product, 'reviews' : reviews}
     return render(request, 'base/product.html', context)
 
@@ -115,17 +138,17 @@ def addProduct(request):
     return render(request, 'base/Product_form.html', context)
 
 @login_required(login_url="login")
-def addReview(request):
-    form = ReviewForm()
+def deleteReview(request, pk):
+    review = Review.objects.get(id = pk)
 
+    if request.user != review.user:
+        return HttpResponse('You are not owner of this review!!')
+    
     if request.method == 'POST':
-        form = ReviewForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-
-    context = {'form' : form}
-    return render(request, 'base/Review_form.html', context)
+        review.delete()
+        return redirect('home')
+    context = {'obj' : review}
+    return render(request, 'base/delete.html', context)
 
 @login_required(login_url="login")
 def updateProduct(request, pk):
@@ -146,6 +169,7 @@ def updateProduct(request, pk):
 
     context = {'form' : form}
     return render(request, 'base/Product_form.html', context)
+
 
 @login_required(login_url="login")
 def deleteProduct(request, pk):
@@ -188,3 +212,7 @@ def updateCategory(request, pk):
     
     context = {'form': form}
     return render(request, 'base/Category_form.html', context)
+
+def userProfile(rrquest):
+    context = {}
+    return render(request, 'base/Profile.html', context)

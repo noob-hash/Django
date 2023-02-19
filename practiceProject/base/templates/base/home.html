@@ -37,9 +37,12 @@
                 <!-- above works fine but to make sure it is not affected by change of url name and works 
                 with name provoded below is a better solution-->
     
-                <h2 style="display: flex; justify-content: space-between;"> <a href="{% url 'product' product.id %}"> {{product.name}} </a> {{product.user}}  <a href="{% url 'addReview' %}">Add Review</a></h2>
+                <div style="padding-bottom: 2vh;">
+                    <h2> <a href="{% url 'product' product.id %}"> {{product.name}} </a> </h2> 
+                    <span> Placed by: @{{product.user}}</span>
+                </div>
                 <span>Category: {{product.category.name}}</span><br>
-                
+                <h4>Reviews</h4>
                 {% for review in reviews%}
                     {%if review.product.id == product.id%}
                     <div>
